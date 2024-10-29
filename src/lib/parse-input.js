@@ -5,7 +5,7 @@
  * a positive match with the first capturing group
  * with "  - " and a second with "  "
  */
-const leadingWhitespaceAndBulletRegex = /^((\s*)(?:\s)?)/;
+const leadingWhitespaceAndBulletRegex = /^((\s*)(?:-\s)?)/;
 
 /**
  * Matches lines that only contain whitespace
