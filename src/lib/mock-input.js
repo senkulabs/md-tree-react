@@ -1,0 +1,15 @@
+export const mockInput = [
+    'my-app',
+    '  src',
+    '    main.js',
+    '    style.css',
+    '  dist',
+    '    index.html',
+    '    assets',
+    '      index.css',
+    '      index.js',
+    '  index.html',
+    '  package.json',
+    '  package-lock.json',
+    '  README.md',
+].join('\n');
