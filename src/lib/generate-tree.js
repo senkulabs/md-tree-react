@@ -9,7 +9,7 @@ const defaultOptions = {
 /**
  * Generates an ASCII tree diagram, given a FileStructure
  * @param structure The FileStructure object to convert into ASCII
- * @param options The rendering options
+ * @param option The rendering options
  */
 export const generateTree = (structure, option = defaultOptions) => {
     return [getAsciiLine(structure, option), structure.children.map(c => generateTree(c, option))].flat(Infinity).join('\n');
