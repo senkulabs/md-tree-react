@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { generateTree } from "./lib/generate-tree";
 import { parseInput } from "./lib/parse-input";
+import { useEffect } from "react";
+import { useRef } from "react";
 
 const initialValue = `Edit me to generate
   a
@@ -17,17 +19,60 @@ const initialValue = `Edit me to generate
     - You can even
       - use
         - markdown
-        - bullets!
-`;
+        - bullets!`.trim();
 
 
 function App() {
   const [value, setValue] = useState(initialValue);
   const [copied, setCopied] = useState(false);
+  const [shared, setShared] = useState(false);
   const [fancyMode, setFancyMode] = useState(true);
   const [showTrailingSlashDir, setShowTrailingSlashDir] = useState(true);
   const [showFullPath, setShowFullPath] = useState(false);
   const [showRootDot, setShowRootDot] = useState(true);
+
+  const textareaRef = useRef(null);
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const searchParams = url.searchParams;
+    
+    if (searchParams.has('snippet')) {
+      const result = JSON.parse(atob(searchParams.get('snippet')));
+      if (result.hasOwnProperty('content')) {
+        setValue(JSON.parse(result.content));
+      }
+      if (result.hasOwnProperty('charset')) {
+        setFancyMode(result.charset === 'utf-8' ? true : false);
+      }
+      if (result.hasOwnProperty('trailingSlashDir')) {
+        setShowTrailingSlashDir(result.trailingSlashDir);
+      }
+      if (result.hasOwnProperty('fullPath')) {
+        setShowFullPath(result.fullPath);
+      }
+      if (result.hasOwnProperty('rootDot')) {
+        setShowRootDot(result.rootDot);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+
+    // Move cursor to the end of text
+    const length = textareaRef.current.value.length;
+    textareaRef.current.setSelectionRange(length, length);
+  }, []);
+
+  let options = {
+    charset: fancyMode ? 'utf-8' : 'ascii',
+    trailingSlashDir: showTrailingSlashDir,
+    fullPath: showFullPath,
+    rootDot: showRootDot,
+  };
 
   function handleTabKey(event) {
     if (event.key === 'Tab') {
@@ -49,7 +94,7 @@ function App() {
 
   async function handleCopy() {
     try {
-      await navigator.clipboard.writeText(fancyMode ? generateTree(parseInput(value)) : generateTree(parseInput(value), { charset: 'ascii' }));
+      await navigator.clipboard.writeText(generateTree(parseInput(value), options));
       setCopied(true);
 
       // Reset the "copied" message after 2 seconds
@@ -58,6 +103,31 @@ function App() {
       }, 2000);
     } catch (error) {
       console.error('Failed to copy text:', error);
+    }
+  }
+
+  async function handleShare() {
+    try {
+      let data = {
+        content: JSON.stringify(value),
+        ...options
+      };
+      
+      let url = new URL(window.location.origin);
+      url.searchParams.append('snippet', btoa(JSON.stringify(data)));
+      if (navigator.canShare()) {
+        await navigator.share(url.href);
+      } else {
+        await navigator.clipboard.writeText(url.href);
+      }
+      
+      setShared(true);
+  
+      setTimeout(() => {
+        setShared(false)
+      }, 2000);
+    } catch (error) {
+      console.error('Failed to shared', error);
     }
   }
 
@@ -77,25 +147,21 @@ function App() {
     setShowRootDot(!showRootDot);
   }
 
-  let options = {
-    charset: fancyMode ? 'utf-8' : 'ascii',
-    trailingSlashDir: showTrailingSlashDir,
-    fullPath: showFullPath,
-    rootDot: showRootDot,
-  };
-  
   return (
     <div className="container p-2 mx-auto">
-      <div style={{ display: 'flex', justifyContent: 'space-around', gap: '1rem' }}>
-        <textarea style={{ width: '480px', height: '320px', tabSize: '2', fontSize: '1rem' }} value={value} onChange={(event) => {
+      <h1 style={{ textAlign: 'center' }}>Markdown Tree Generator</h1>
+      <p style={{ margin: '.5rem' }}>Generate tree for markdown use case. The idea of this project comes from <a href="https://tree.nathanfriend.com" target="_blank">tree.nathanfriend.com</a> but with functional React component and no third party dependencies.</p>
+      <div className="editor">
+        <textarea ref={textareaRef} style={{ width: '480px', height: '320px', tabSize: '2', fontSize: '1rem' }} value={value} onChange={(event) => {
           setValue(event.target.value);
         }} onKeyDown={handleTabKey}></textarea>
-        <div className="tree" style={{ width: '480px', whiteSpace: 'pre', fontFamily: 'monospace' }}>
-          { fancyMode ? generateTree(parseInput(value), options) : generateTree(parseInput(value), options) }
+        <div className="tree">
+          { generateTree(parseInput(value), options) }
         </div>
       </div>
       <div className="control">
-        <button onClick={handleCopy}>{ copied ? 'Copied' : 'Copy to clipboard' }</button>
+        <button onClick={handleCopy}>{ copied ? 'Copied' : 'Copy' }</button>
+        <button onClick={handleShare}>{ shared ? 'URL copied' : 'Share' }</button>
         <label htmlFor="fancy-mode">
           <input type="checkbox" id="fancy-mode" onChange={handleFancyMode} checked={fancyMode} />Fancy
         </label>

@@ -28,3 +28,37 @@ html, body {
   margin-left: auto;
   margin-right: auto;
 }
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  gap: 1rem;
+}
+
+@media screen and (min-width: 960px) {
+  .editor {
+    flex-direction: row;
+    align-items: initial;
+  }
+}
+
+.tree {
+  width: 480px;
+  white-space: pre;
+  font-family: monospace;
+  background: lightgray;
+  padding: 1rem;
+  border-radius: .5rem;
+}
+
+.control {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  /* Make space between .editor and .control */
+  margin-top: 1rem;
+  /* Make .tree align with .control */
+  margin-right: 2rem;
+}
