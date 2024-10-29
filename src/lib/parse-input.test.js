@@ -6,7 +6,7 @@ test('parse-input: parses plain text into a File Structure objects', () => {
     const actual = parseInput(mockInput);
 
     const root = {
-        name: 'root',
+        name: '.',
         children: [],
         indentCount: -1,
         parent: null

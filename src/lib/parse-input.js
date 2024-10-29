@@ -21,7 +21,7 @@ export const parseInput = (input) => {
     const structures = splitInput(input);
 
     const root = {
-        name: 'root',
+        name: '.',
         children: [],
         indentCount: -1,
         parent: null
