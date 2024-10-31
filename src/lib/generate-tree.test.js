@@ -5,7 +5,7 @@ import { generateTree } from "./generate-tree.js";
 
 describe('generateTree', () => {
     it('returns an UTF-8 representation of provided FileStructure Object', () => {
-        const actual = generateTree(parseInput(mockInput), { charset: 'utf-8', rootDot: true, trailingSlashDir: false });
+        const actual = generateTree(parseInput(mockInput));
 
         const expected = `
 .
@@ -28,7 +28,7 @@ describe('generateTree', () => {
     });
 
     it('returns an ASCII representation of the provided FileStrucure object', () => {
-        const actual = generateTree(parseInput(mockInput), { charset: 'ascii', rootDot: true });
+        const actual = generateTree(parseInput(mockInput), { charset: 'ascii' });
         const expected = `
 .
 \`-- my-app
@@ -59,7 +59,7 @@ describe('generateTree', () => {
               grandchild
             `;
 
-            const actual = generateTree(parseInput(input), { charset: 'utf-8', trailingSlashDir: false, rootDot: true });
+            const actual = generateTree(parseInput(input));
 
             const expected = `
             .
@@ -83,7 +83,7 @@ describe('generateTree', () => {
             child
               grandchild`;
         
-        const actual = generateTree(parseInput(input), { charset: 'utf-8', rootDot: true, trailingSlashDir: true });
+        const actual = generateTree(parseInput(input), { trailingSlashDir: true });
 
         const expected = `
 .
@@ -110,7 +110,7 @@ describe('generateTree', () => {
     
         `;
     
-        const actual = generateTree(parseInput(input), { charset: 'utf-8', rootDot: true, fullPath: true });
+        const actual = generateTree(parseInput(input), { fullPath: true });
     
         const expected = `
 .
@@ -134,7 +134,7 @@ describe('generateTree', () => {
           grandchild
         `;
     
-        const actual = generateTree(parseInput(input), { charset: 'utf-8', rootDot: false });
+        const actual = generateTree(parseInput(input), { rootDot: false });
     
         const expected = `
 grandparent

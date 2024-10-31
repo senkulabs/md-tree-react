@@ -27,7 +27,7 @@ function mergeDeep(target, source) {
 
 const defaultOptions = {
     charset: 'utf-8',
-    trailingSlashDir: true,
+    trailingSlashDir: false,
     fullPath: false,
     rootDot: true,
 };
@@ -38,7 +38,7 @@ const defaultOptions = {
  * @param options The rendering options
  */
 export const generateTree = (structure, options = defaultOptions) => {
-    return [getAsciiLine(structure, defaultsDeep({}, options)), structure.children.map(c => generateTree(c, options))]
+    return [getAsciiLine(structure, defaultsDeep({}, defaultOptions, options)), structure.children.map(c => generateTree(c, options))]
         .flat(Infinity)
         // Remove null entries. Should only occur for the very first node
         // when options.rootDot === false
@@ -100,7 +100,7 @@ const getName = (structure, options) => {
         nameChunks.unshift(
             getName(
                 structure.parent,
-                defaultsDeep({}, { trailingSlashDir: true }, options)
+                defaultsDeep({}, options, { trailingSlashDir: true })
             ),
         );
     }
