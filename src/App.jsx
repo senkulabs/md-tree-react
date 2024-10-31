@@ -67,7 +67,7 @@ function App() {
     textareaRef.current.setSelectionRange(length, length);
   }, []);
 
-  let options = {
+  const options = {
     charset: fancyMode ? 'utf-8' : 'ascii',
     trailingSlashDir: showTrailingSlashDir,
     fullPath: showFullPath,
