@@ -1,10 +1,10 @@
-import { describe, test, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { parseInput } from "./parse-input.js";
 import { mockInput } from "./mock-input.js";
 import { generateTree } from "./generate-tree.js";
 
 describe('generateTree', () => {
-    test('returns an UTF-8 representation of provided FileStructure Object', () => {
+    it('returns an UTF-8 representation of provided FileStructure Object', () => {
         const actual = generateTree(parseInput(mockInput), { charset: 'utf-8', rootDot: true, trailingSlashDir: false });
 
         const expected = `
@@ -27,7 +27,7 @@ describe('generateTree', () => {
         expect(actual).toEqual(expected);
     });
 
-    test('returns an ASCII representation of the provided FileStrucure object', () => {
+    it('returns an ASCII representation of the provided FileStrucure object', () => {
         const actual = generateTree(parseInput(mockInput), { charset: 'ascii', rootDot: true });
         const expected = `
 .
@@ -48,7 +48,7 @@ describe('generateTree', () => {
         expect(actual).toEqual(expected);
     });
 
-    test('it does not render lines for parent directories that have already printed all of their children', () => {
+    it('does not render lines for parent directories that have already printed all of their children', () => {
         const input = `
         
         grandparent
@@ -74,7 +74,7 @@ describe('generateTree', () => {
         expect(actual).toBe(expected);
     });
 
-    test('it appends a trailing slash to directories if trailingSlash === true', () => {
+    it('appends a trailing slash to directories if trailingSlash === true', () => {
         const input = `
         grandparent
           parent/
@@ -98,7 +98,7 @@ describe('generateTree', () => {
         expect(actual).toEqual(expected);
     });
 
-    test("prints each items' full path if fullPath === true", () => {
+    it("prints each items' full path if fullPath === true", () => {
         const input = `
 
     grandparent
