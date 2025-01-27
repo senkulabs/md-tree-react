@@ -1,30 +1,5 @@
 import { LINE_STRINGS } from "./line-strings.js";
 
-function defaultsDeep(target, ...sources) {
-    return mergeDeep(target, Object.assign({}, ...sources));
-}
-
-function mergeDeep(target, source) {
-    if (typeof target !== 'object' || typeof source !== 'object' || Array.isArray(target) || Array.isArray(source)) {
-        return source;
-    }
-
-    for (const [key, value] of Object.entries(source)) {
-        if (value && typeof value === 'object') {
-            if (!target[key]) {
-                target[key] = {};
-            }
-            mergeDeep(target[key], value);
-        } else if (target[key] === undefined) {
-            target[key] = value;
-        }
-    }
-
-    return target;
-}
-
-// options available are ascii & utf-8
-
 const defaultOptions = {
     charset: 'utf-8',
     trailingSlashDir: true,
@@ -38,7 +13,7 @@ const defaultOptions = {
  * @param options The rendering options
  */
 export const generateTree = (structure, options = defaultOptions) => {
-    return [getAsciiLine(structure, defaultsDeep({}, options)), structure.children.map(c => generateTree(c, options))]
+    return [getAsciiLine(structure, {...defaultOptions, ...options}), structure.children.map(c => generateTree(c, options))]
         .flat(Infinity)
         // Remove null entries. Should only occur for the very first node
         // when options.rootDot === false
@@ -100,7 +75,7 @@ const getName = (structure, options) => {
         nameChunks.unshift(
             getName(
                 structure.parent,
-                defaultsDeep({}, { trailingSlashDir: true }, options)
+                {...{trailingSlashDir: true}, options}
             ),
         );
     }
