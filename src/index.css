@@ -46,8 +46,12 @@ html, body {
 
 .tree {
   width: 480px;
+  max-height: 480px;
   white-space: pre;
   font-family: monospace;
+  font-size: 0.875rem;
+  line-height: 2;
+  overflow: auto;
   background: lightgray;
   padding: 1rem;
   border-radius: .5rem;
